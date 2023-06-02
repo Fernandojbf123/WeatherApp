@@ -11,6 +11,8 @@ const ClimaProvider = ({children}) => {
     })
 
     let [weatherAnswer, setWeatherAnswer] = useState({})
+    let [isLoading, setIsLoading] = useState(false)
+
 
     function dataSearch (e) {
         setSearch({
@@ -19,7 +21,10 @@ const ClimaProvider = ({children}) => {
         })
     }
 
+    
+
     async function requestWeather (inputData) {
+        setIsLoading(true)
         try {
             const {city, country} = inputData;
             const appId = import.meta.env.VITE_API_KEY
@@ -31,11 +36,10 @@ const ClimaProvider = ({children}) => {
             const urlWeather = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${appId}`
             const {data: weatherData} = await axios(urlWeather);
             setWeatherAnswer(weatherData)
-
+            setIsLoading(false)
         } catch (error) {
-            console.log(error)   
+            console.log(error) 
         }
-        
     }
 
     return (
@@ -46,6 +50,7 @@ const ClimaProvider = ({children}) => {
                 dataSearch,
                 requestWeather,
                 weatherAnswer,
+                isLoading,
             }}
         >
             {children}
